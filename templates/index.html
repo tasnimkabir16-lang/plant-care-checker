@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Plant Care Checker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <h1>🌱 Plant Care Checker</h1>
+  <p>Select your plant and upload a leaf photo to get care tips.</p>
+
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% endif %}
+
+  <form action="/analyze" method="POST" enctype="multipart/form-data">
+
+    <label for="plant">Choose a plant:</label>
+    <select name="plant" id="plant" required>
+      <option value="" disabled selected>-- select --</option>
+      {% for key, p in plants.items() %}
+        <option value="{{ key }}">{{ p.name }}</option>
+      {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label for="photo">Upload leaf photo:</label>
+    <input type="file" name="photo" id="photo" accept="image/*" required>
+
+    <br><br>
+
+    <button type="submit">Check Plant</button>
+  </form>
+
+  {% if result %}
+    <hr>
+    <h2>{{ result.plant.name }}</h2>
+
+    {% if result.warning %}
+      <p class="warning">⚠️ {{ result.warning }}</p>
+    {% endif %}
+
+    <h3>Leaf Health</h3>
+    <p>Green: {{ result.health.green }}% | Yellow: {{ result.health.yellow }}% | Brown: {{ result.health.brown }}%</p>
+    <p><b>{{ result.health.message }}</b></p>
+
+    <h3>Care Guide</h3>
+    <ul>
+      <li><b>Water:</b> {{ result.plant.water }}</li>
+      <li><b>Sunlight:</b> {{ result.plant.sunlight }}</li>
+      <li><b>Fertilizer:</b> {{ result.plant.fertilizer }}</li>
+      <li><b>Soil:</b> {{ result.plant.soil }}</li>
+    </ul>
+  {% endif %}
+
+  <hr>
+  <p style="font-size: 13px; color: gray;">Mini Project - Plant Care Checker using leaf color analysis</p>
+
+</body>
+</html>
